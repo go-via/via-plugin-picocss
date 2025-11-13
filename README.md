@@ -39,11 +39,10 @@ func main() {
 
 		c.View(func() h.H {
 			return h.Main(h.Class("container"), h.Br(),
-				h.H1(h.Text("⚡ Via Counter w/ PicoCSS Plugin")),
-				h.Hr(),
+				h.H1(h.Text("⚡ Via Counter")), h.Hr(),
 				h.Div(
-					h.H2(h.Strong(h.Text("Count - ")), h.Textf("%d", data.Count)),
-					h.H5(h.Strong(h.Text("Step - ")), h.Span(step.Text())),
+					h.H2(h.Textf("Count - %d", data.Count)),
+					h.H5(h.Text("Step - "), step.Text()),
 					h.Div(h.Role("group"),
 						h.Input(h.Type("number"), step.Bind()),
 						h.Button(h.Text("Increment"), increment.OnClick()),

@@ -18,6 +18,9 @@ func main() {
 
 	v.Config(via.Options{
 		DocumentTitle: "Via Counter",
+
+		// Plugin is placed here. Use picocss.WithOptions(pococss.Options) to add the plugin
+		// with a different color theme or to enable a classes for a wide range of colors.
 		Plugins:       []via.Plugin{picocss.Default},
 	})
 

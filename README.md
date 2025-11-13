@@ -1,6 +1,9 @@
 #  ✨ PicoCSS Plugin
 The PicoCSS plugin integrates seamlessly with Via to provide elegant, responsive, and lightweight styling for your components without writing any CSS manually.
 
+## Learning
+Check out the PicoCSS [documentation](https://picocss.com/docs) for examples and a getting started guide on how to use it.
+
 ## Example
 ```go
 package main
@@ -18,10 +21,11 @@ func main() {
 
 	v.Config(via.Options{
 		DocumentTitle: "Via Counter",
-
 		// Plugin is placed here. Use picocss.WithOptions(pococss.Options) to add the plugin
 		// with a different color theme or to enable a classes for a wide range of colors.
-		Plugins:       []via.Plugin{picocss.Default},
+		Plugins: []via.Plugin{
+			picocss.Default,
+		},
 	})
 
 	v.Page("/", func(c *via.Context) {
@@ -52,6 +56,3 @@ func main() {
 	v.Start()
 }
 ```
-
-## Docs
-See PicoCSS [docs](https://picocss.com/docs) to learn how to use it.

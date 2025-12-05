@@ -2,7 +2,7 @@ module github.com/go-via/via-plugin-picocss
 
 go 1.25.4
 
-require github.com/go-via/via v0.0.0-20251112033322-d28277337989
+require github.com/go-via/via v0.1.4
 
 require (
 	github.com/CAFxX/httpcompression v0.0.9 // indirect

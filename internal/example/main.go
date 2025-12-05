@@ -11,13 +11,13 @@ func main() {
 	v := via.New()
 
 	v.Config(via.Options{
-		DevMode:       true,
 		DocumentTitle: "PicoCSS Plugin for Via",
 		Plugins: []via.Plugin{
 
 			// Plugin is placed here.
 			// Use picocss.Default to add the plugin with default options.
 			picocss.WithOptions(picocss.Options{
+				Theme:         picocss.ThemeAmber,
 				IncludeColors: true,
 			}),
 		},
@@ -31,9 +31,9 @@ func main() {
 					Nav(
 						Ul(Li(Strong(Text("⚡Via")))),
 						Ul(
-							Li(A(Text("About"), Href("https://github.com/go-via/via"))),
-							Li(A(Text("Resources"), Href("https://github.com/orgs/go-via/repositories"))),
-							Li(A(Text("Comunity"), Href("http://github.com/go-via/via/discussions"))),
+							Li(A(Class("pico-color-slate-50"), Text("About"), Href("https://github.com/go-via/via"))),
+							Li(A(Class("pico-color-slate-50"), Text("Resources"), Href("https://github.com/orgs/go-via/repositories"))),
+							Li(A(Class("pico-color-slate-50"), Text("Comunity"), Href("http://github.com/go-via/via/discussions"))),
 						),
 					),
 				),
@@ -76,14 +76,13 @@ func main() {
 							Li(Mark(Class("pico-background-sand"), Text("Sand"))),
 						),
 						Ul(
-
 							Li(Mark(Class("pico-background-slate"), Text("Slate"))),
 							Li(Mark(Class("pico-background-violet"), Text("Violet"))),
 							Li(Mark(Class("pico-background-yellow"), Text("Yellow"))),
 							Li(Mark(Class("pico-background-zinc"), Text("Zinc"))),
 						),
 					),
-					P(Small(Text("* default theme."))),
+					P(Small(Text("(*) Default Theme."))),
 				))
 
 		})

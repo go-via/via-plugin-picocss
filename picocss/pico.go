@@ -4,6 +4,7 @@
 package picocss
 
 import (
+	"embed"
 	_ "embed"
 	"net/http"
 
@@ -11,76 +12,8 @@ import (
 	"github.com/go-via/via/h"
 )
 
-//go:embed pico.amber.min.css
-var picoAmber []byte
-
-//go:embed pico.blue.min.css
-var picoBlue []byte
-
-//
-//go:embed pico.cyan.min.css
-var picoCyan []byte
-
-//go:embed pico.fuchsia.min.css
-var picoFuchsia []byte
-
-//go:embed pico.green.min.css
-var picoGreen []byte
-
-//go:embed pico.grey.min.css
-var picoGrey []byte
-
-//go:embed pico.indigo.min.css
-var picoIndigo []byte
-
-//go:embed pico.jade.min.css
-var picoJade []byte
-
-//go:embed pico.lime.min.css
-var picoLime []byte
-
-//go:embed pico.orange.min.css
-var picoOrange []byte
-
-//go:embed pico.pink.min.css
-var picoPink []byte
-
-//go:embed pico.pumpkin.min.css
-var picoPumpkin []byte
-
-//go:embed pico.purple.min.css
-var picoPurple []byte
-
-//go:embed pico.red.min.css
-var picoRed []byte
-
-//go:embed pico.sand.min.css
-var picoSand []byte
-
-//go:embed pico.slate.min.css
-var picoSlate []byte
-
-//go:embed pico.violet.min.css
-var picoViolet []byte
-
-//go:embed pico.yellow.min.css
-var picoYellow []byte
-
-//go:embed pico.zinc.min.css
-var picoZinc []byte
-
-//go:embed pico.colors.min.css
-var picoColors []byte
-
-// Default adds the PicoCSS amber variant stylesheet to the base html document. To enable
-// the plugin, add it to the *via.v runtime configuration in via.option.plugins.
-func Default(v *via.V) {
-	v.HandleFunc("GET /_plugins/picocss/assets/style.css", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/css")
-		_, _ = w.Write(picoAmber)
-	})
-	v.AppendToHead(h.Link(h.Rel("stylesheet"), h.Href("/_plugins/picocss/assets/style.css")))
-}
+//go:embed assets/*
+var assets embed.FS
 
 // Options can be used with WithOptions to configure the picocss plugin.
 type Options struct {
@@ -97,6 +30,7 @@ type Theme int
 
 const (
 	undefined Theme = iota
+	colors
 	ThemeAmber
 	ThemeBlue
 	ThemeCyan
@@ -118,63 +52,81 @@ const (
 	ThemeZinc
 )
 
+var themes = map[Theme]string{
+	undefined:    "assets/pico.amber.min.css",
+	colors:       "assets/pico.colors.min.css",
+	ThemeAmber:   "assets/pico.amber.min.css",
+	ThemeBlue:    "assets/pico.blue.min.css",
+	ThemeCyan:    "assets/pico.cyan.min.css",
+	ThemeFuchia:  "assets/pico.fuchia.min.css",
+	ThemeGreen:   "assets/pico.green.min.css",
+	ThemeGrey:    "assets/pico.grey.min.css",
+	ThemeIndigo:  "assets/pico.indigo.min.css",
+	ThemeJade:    "assets/pico.jade.min.css",
+	ThemeLime:    "assets/pico.lime.min.css",
+	ThemeOrange:  "assets/pico.orange.min.css",
+	ThemePink:    "assets/pico.pink.min.css",
+	ThemePumpkin: "assets/pico.pumpkin.min.css",
+	ThemePurple:  "assets/pico.purple.min.css",
+	ThemeRed:     "assets/pico.red.min.css",
+	ThemeSand:    "assets/pico.sand.min.css",
+	ThemeSlate:   "assets/pico.slate.min.css",
+	ThemeViolet:  "assets/pico.violet.min.css",
+	ThemeYellow:  "assets/pico.yellow.min.css",
+	ThemeZinc:    "assets/pico.zinc.min.css",
+}
+
+// Default adds the PicoCSS amber variant stylesheet to the base html document. To enable
+// the plugin, add it to the *via.v runtime configuration in via.option.plugins.
+var Default via.Plugin = func(v *via.V) {
+
+	v.HandleFunc("GET /_plugins/picocss/assets/style.css", func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Set("Content-Type", "text/css")
+		pico, err := assets.ReadFile(themes[undefined])
+		if err != nil {
+			http.Error(w, "failed to open stylesheet file", http.StatusInternalServerError)
+			return
+		}
+		_, _ = w.Write(pico)
+	})
+	v.AppendToHead(h.Link(h.Rel("stylesheet"), h.Href("/_plugins/picocss/assets/style.css")))
+}
+
 // WithOptions adds the PicoCSS with the provided Options to the base html document.
 func WithOptions(options Options) via.Plugin {
-	var cssBytes []byte
-	switch options.Theme {
-	case ThemeBlue:
-		cssBytes = picoBlue
-	case ThemeCyan:
-		cssBytes = picoCyan
-	case ThemeFuchia:
-		cssBytes = picoFuchsia
-	case ThemeGreen:
-		cssBytes = picoGreen
-	case ThemeGrey:
-		cssBytes = picoGrey
-	case ThemeIndigo:
-		cssBytes = picoIndigo
-	case ThemeJade:
-		cssBytes = picoJade
-	case ThemeLime:
-		cssBytes = picoLime
-	case ThemeOrange:
-		cssBytes = picoOrange
-	case ThemePink:
-		cssBytes = picoPink
-	case ThemePumpkin:
-		cssBytes = picoPumpkin
-	case ThemePurple:
-		cssBytes = picoPurple
-	case ThemeRed:
-		cssBytes = picoRed
-	case ThemeSand:
-		cssBytes = picoSand
-	case ThemeSlate:
-		cssBytes = picoSlate
-	case ThemeViolet:
-		cssBytes = picoViolet
-	case ThemeYellow:
-		cssBytes = picoYellow
-	case ThemeZinc:
-		cssBytes = picoZinc
-	default:
-		cssBytes = picoAmber
+	theme, ok := themes[options.Theme]
+	if !ok {
+		theme = themes[undefined]
 	}
 
 	return func(v *via.V) {
-		v.HandleFunc("GET /_plugins/picocss/assets/pico.css", func(w http.ResponseWriter, r *http.Request) {
+
+		v.HandleFunc("GET /_plugins/picocss/assets/style.css", func(w http.ResponseWriter, r *http.Request) {
+
 			w.Header().Set("Content-Type", "text/css")
-			_, _ = w.Write(cssBytes)
+			pico, err := assets.ReadFile(theme)
+			if err != nil {
+				http.Error(w, "failed to open stylesheet file", http.StatusInternalServerError)
+				return
+			}
+			_, _ = w.Write(pico)
 		})
-		v.AppendToHead(h.Link(h.Rel("stylesheet"), h.Href("/_plugins/picocss/assets/pico.css")))
+		v.AppendToHead(h.Link(h.Rel("stylesheet"), h.Href("/_plugins/picocss/assets/style.css")))
 
 		if options.IncludeColors {
-			v.HandleFunc("GET /_plugins/picocss/assets/pico-colors.css", func(w http.ResponseWriter, r *http.Request) {
+
+			v.HandleFunc("GET /_plugins/picocss/assets/style.colors.css", func(w http.ResponseWriter, r *http.Request) {
+
 				w.Header().Set("Content-Type", "text/css")
+				picoColors, err := assets.ReadFile(themes[colors])
+				if err != nil {
+					http.Error(w, "failed to open stylesheet file", http.StatusInternalServerError)
+					return
+				}
 				_, _ = w.Write(picoColors)
 			})
-			v.AppendToHead(h.Link(h.Rel("stylesheet"), h.Href("/_plugins/picocss/assets/pico-colors.css")))
+			v.AppendToHead(h.Link(h.Rel("stylesheet"), h.Href("/_plugins/picocss/assets/style.colors.css")))
 		}
 	}
 }

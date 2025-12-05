@@ -5,7 +5,6 @@ package picocss
 
 import (
 	"embed"
-	_ "embed"
 	"net/http"
 
 	"github.com/go-via/via"

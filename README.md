@@ -24,7 +24,7 @@ func main() {
 		Plugins: []via.Plugin{
 		// Plugin is placed here. Use picocss.WithOptions(pococss.Options) to add the plugin
 		// with a different color theme or to add an aditional stylesheet with a wide range
-    // of colors.
+    	// of colors.
 			picocss.Default,
 		},
 	})
@@ -41,7 +41,7 @@ func main() {
 		c.View(func() h.H {
 			return h.Main(h.Class("container"),
 				h.H1(h.Text("⚡ Via Counter")),
-        h.Hr(),
+        		h.Hr(),
 				h.Div(
 					h.H2(h.Textf("Count - %d", data.Count)),
 					h.H5(h.Text("Step - "), step.Text()),
